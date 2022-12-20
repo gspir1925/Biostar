@@ -8,6 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="colorib/css/style.css">
+
 
     <title>BIOSTAR MANAGEMENT</title>
 
@@ -82,9 +89,8 @@
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manage User:</h6>
-                        <a class="collapse-item" href="{{url('/add')}}">Add</a>
-                        <a class="collapse-item" href="{{url('/delete')}}">Delete</a>
+                        <h6 class="collapse-header">Etat</h6>
+                        <a class="collapse-item" href="{{url('/report')}}">Generate Report</a>
                     </div>
                 </div>
             </li>
@@ -242,32 +248,43 @@
                             <h6 class="m-0 font-weight-bold text-primary">Reporting of all user access in system</h6><br>
                         </div>
                         <div>
-                                <form id="myForm" method="POST" action='{{url('/display/post')}}'>
+                                <form id="myForm" method="POST" action='{{url('/display-post')}}'>
                                     @csrf
                                     <div class="form-group">
-                                        <select class="form-select" aria-label="Default select example" id="user_selected" name="user_selected">
-                                            <option selected>Users</option>
+
+                                        <select class="form-select" id="multiple-checkboxes" multiple="multiple" name="user_selected[]">
                                             @if (!empty($users))
                                                 @foreach ($users as $user)
                                                     <option value="{{$user->name}}">{{$user->name}}</option>
                                                 @endforeach
                                             @endif
                                         </select>
-                                        <select class="form-select" aria-label="Default select example" id="device_selected" name="device_selected">
-                                            <option selected>Lecteurs</option>
+
+                                        <!--<select class="form-select" aria-label="Default select example" id="user_selected" name="user_selected">
+                                           
+                                        </select>-->
+                                        <select class="form-select" id="multiple-checkboxes" multiple="multiple" name="device_selected[]">
+                                            <option value="test_device">TestDevice</option>
                                             @if (!empty($device_trouve))
                                                 @foreach ($device_trouve as $device_display)
                                                     <option value="{{$device_display->NM}}">{{$device_display->NM}}</option>
                                                 @endforeach
-                                                
                                             @endif
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="date" name="date" id="date_choice">
+                                        <label for="date_begin">Date de début</label>
+                                        <input type="date" name="date_begin" id="date_choice_begin">
+                                        <label for="date_end">Date de fin</label>
+                                        <input type="date" name="date_end" id="date_choice_end">
                                     </div>
                                     <button class="btn btn-primary" id="ajaxSubmit">Afficher</button>
                                 </form>
+                            </p>
+                            <p>
+                                @if (!empty($table_existe))
+                                    {{$table_existe}}<br/>
+                                @endif
                             </p>
                         </div>
                             
@@ -277,6 +294,7 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
+                                            <th>Noms</th>
                                             <th>Lundi</th>
                                             <th>Mardi</th>
                                             <th>Mercredi</th>
@@ -287,93 +305,262 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (!empty($table_existe))
-                                            <p>{{$table_existe}}</p>
-                                        @else
-                                            @if (!empty($tabentree_monday))
-                                            @php
-                                            foreach ($tabentree_monday as $key => $value) {
-                                                    echo'<tr>';
-                                                        echo'<td>';
-                                                                echo $tabentree_monday[$key];
-                                                        echo'</td>';
-                                                    echo'</tr>';    
-                                                }  
-                                            @endphp
-                                        @endif
-                    
-                                        @if (!empty($tabentree_tuesday))
-                                            @php
-                                            foreach ($tabentree_tuesday as $dt => $value) {
-                                                    echo'<tr>';
-                                                        echo'<td>';
-                                                            echo $tabentree_tuesday[$dt];
-                                                        echo'</td>';
-                                                    echo'</tr>';  
-                                                }
-                                            @endphp
-                                        @endif
-
-                                        @if (!empty($tabentree_wednesday))
-                                            @php
-                                                foreach ($tabentree_wednesday as $wt => $value) {
-                                                    echo'<tr>';
-                                                    echo  '<td>';
-                                                            echo $tabentree_wednesday[$wt];
-                                                        echo'</td>';
-                                                    echo'</tr>';    
-                                                }         
-                                            @endphp
-                                        @endif
-                                        
-                                        @if (!empty($tabentree_thursday))
-                                            @php
-                                                foreach ($tabentree_thursday as $tht => $value) {
-                                                    echo'<tr>';
-                                                        echo '<td>';
-                                                            echo $tabentree_thursday[$tht];
-                                                        echo'</td>';
-                                                    echo'</tr>';  
-                                                }       
-                                            @endphp
-                                        @endif
-                                        
-                                        @if (!empty($tabentree_friday))
-                                            @php
-                                                foreach ($tabentree_friday as $ft => $value) {
-                                                    echo'<tr>';
-                                                    echo  '<td>';
-                                                            echo $tabentree_friday[$ft];
-                                                        echo'</td>';
-                                                    echo'</tr>';    
-                                                }       
-                                            @endphp
-                                        @endif
-
-                                        @if (!empty($tabentree_saturday))
-                                            @php
-                                                foreach ($tabentree_saturday as $sat => $value) {
-                                                    echo'<tr>';
-                                                    echo  '<td>';
-                                                            echo $tabentree_saturday[$sat];
-                                                        echo'</td>';
-                                                    echo'</tr>';    
-                                                }       
-                                            @endphp
-                                        @endif
-
-                                        @if (!empty($tabentree_sunday))
-                                            @php
-                                                foreach ($tabentree_sunday as $st => $value) {
-                                                    echo'<tr>';
-                                                    echo  '<td>';
-                                                            echo $tabentree_sunday[$st];
-                                                        echo'</td>';
-                                                    echo'</tr>';    
-                                                }       
-                                            @endphp
-                                        @endif
-                                        @endif
+                                    @if (!empty($user_requested))
+                                        @php
+                                            for($i=0;$i<$countname_user;$i++){
+                                                echo'<tr>';
+                                                    echo'<td>';
+                                                        echo $user_requested[$i];
+                                                    echo'</td>';
+                                                    echo'<td>';
+                                                        if (!empty($tabentree_monday)) {
+                                                            if ($countname_user=1) {
+                                                                if ($countname_device=1) {
+                                                                    foreach ($tabentree_monday[0][0] as $key => $value) {
+                                                                        echo $tabentree_monday[0][0][$key].'<br />';
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    for($j=0;$j<$countname_device; $j++){
+                                                                        foreach ($tabentree_monday[0][$j] as $key => $value) {
+                                                                            echo $tabentree_monday[0][$j][$key].'<br />';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else{
+                                                                if ($countname_device=1) {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        foreach ($tabentree_monday[$i][0] as $key => $value) {
+                                                                            echo $tabentree_monday[$i][0][$key].'<br />';
+                                                                        } 
+                                                                    }
+                                                                } else {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        for($j=0;$j<$countname_device; $j++){
+                                                                            foreach ($tabentree_monday[$i][$j] as $key => $value) {
+                                                                                echo $tabentree_monday[$i][$j][$key].'<br />';
+                                                                            }
+                                                                        }  
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    echo'</td>';
+                                                    echo'<td>';
+                                                        if (!empty($tabentree_tuesday)) {
+                                                            if ($countname_user=1) {
+                                                                if ($countname_device=1) {
+                                                                    foreach ($tabentree_tuesday[0][0] as $key => $value) {
+                                                                        echo $tabentree_tuesday[0][0][$key].'<br />';
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    for($j=0;$j<$countname_device; $j++){
+                                                                        foreach ($tabentree_tuesday[0][$j] as $key => $value) {
+                                                                            echo $tabentree_tuesday[0][$j][$key].'<br />';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } 
+                                                            else {
+                                                                if ($countname_device=1) {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        foreach ($tabentree_tuesday[$i][0] as $key => $value) {
+                                                                            echo $tabentree_tuesday[$i][0][$key].'<br />';
+                                                                        } 
+                                                                    }
+                                                                } else {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        for($j=0;$j<$countname_device; $j++){
+                                                                            foreach ($tabentree_tuesday[$i][$j] as $key => $value) {
+                                                                                echo $tabentree_tuesday[$i][$j][$key].'<br />';
+                                                                            }
+                                                                        }  
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    echo'</td>';
+                                                    echo'<td>';
+                                                        if (!empty($tabentree_wednesday)) {
+                                                            if ($countname_user=1) {
+                                                                if ($countname_device=1) {
+                                                                    foreach ($tabentree_wednesday[0][0] as $key => $value) {
+                                                                        echo $tabentree_wednesday[0][0][$key].'<br />';
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    for($j=0;$j<$countname_device; $j++){
+                                                                        foreach ($tabentree_wednesday[0][$j] as $key => $value) {
+                                                                            echo $tabentree_wednesday[0][$j][$key].'<br />';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } 
+                                                            else {
+                                                                if ($countname_device=1) {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        foreach ($tabentree_wednesday[$i][0] as $key => $value) {
+                                                                            echo $tabentree_wednesday[$i][0][$key].'<br />';
+                                                                        } 
+                                                                    }
+                                                                } else {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        for($j=0;$j<$countname_device; $j++){
+                                                                            foreach ($tabentree_wednesday[$i][$j] as $key => $value) {
+                                                                                echo $tabentree_wednesday[$i][$j][$key].'<br />';
+                                                                            }
+                                                                        }  
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    echo'</td>';
+                                                    echo'<td>';
+                                                        if (!empty($tabentree_thursday)) {
+                                                            if ($countname_user=1) {
+                                                                if ($countname_device=1) {
+                                                                    foreach ($tabentree_thursday[0][0] as $key => $value) {
+                                                                        echo $tabentree_thursday[0][0][$key].'<br />';
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    for($j=0;$j<$countname_device; $j++){
+                                                                        foreach ($tabentree_thursday[0][$j] as $key => $value) {
+                                                                            echo $tabentree_thursday[0][$j][$key].'<br />';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } 
+                                                            else {
+                                                                if ($countname_device=1) {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        foreach ($tabentree_thursday[$i][0] as $key => $value) {
+                                                                            echo $tabentree_thursday[$i][0][$key].'<br />';
+                                                                        } 
+                                                                    }
+                                                                } else {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        for($j=0;$j<$countname_device; $j++){
+                                                                            foreach ($tabentree_thursday[$i][$j] as $key => $value) {
+                                                                                echo $tabentree_thursday[$i][$j][$key].'<br />';
+                                                                            }
+                                                                        }  
+                                                                    }
+                                                                }  
+                                                            }
+                                                        }
+                                                    echo'</td>';
+                                                    echo'<td>';
+                                                        if (!empty($tabentree_friday)) {
+                                                            if ($countname_user=1) {
+                                                                if ($countname_device=1) {
+                                                                    foreach ($tabentree_friday[0][0] as $key => $value) {
+                                                                        echo $tabentree_friday[0][0][$key].'<br />';
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    for($j=0;$j<$countname_device; $j++){
+                                                                        foreach ($tabentree_friday[0][$j] as $key => $value) {
+                                                                            echo $tabentree_friday[0][$j][$key].'<br />';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } 
+                                                            else {
+                                                                if ($countname_device=1) {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        foreach ($tabentree_friday[$i][0] as $key => $value) {
+                                                                            echo $tabentree_friday[$i][0][$key].'<br />';
+                                                                        } 
+                                                                    }
+                                                                } else {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        for($j=0;$j<$countname_device; $j++){
+                                                                            foreach ($tabentree_friday[$i][$j] as $key => $value) {
+                                                                                echo $tabentree_friday[$i][$j][$key].'<br />';
+                                                                            }
+                                                                        }  
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    echo'</td>';
+                                                    echo'<td>';
+                                                        if (!empty($tabentree_saturday)) {
+                                                            if ($countname_user=1) {
+                                                                if ($countname_device=1) {
+                                                                    foreach ($tabentree_saturday[0][0] as $key => $value) {
+                                                                        echo $tabentree_saturday[0][0][$key].'<br />';
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    for($j=0;$j<$countname_device; $j++){
+                                                                        foreach ($tabentree_saturday[0][$j] as $key => $value) {
+                                                                            echo $tabentree_saturday[0][$j][$key].'<br />';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } 
+                                                            else {
+                                                                if ($countname_device=1) {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        foreach ($tabentree_saturday[$i][0] as $key => $value) {
+                                                                            echo $tabentree_saturday[$i][0][$key].'<br />';
+                                                                        } 
+                                                                    }
+                                                                } else {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        for($j=0;$j<$countname_device; $j++){
+                                                                            foreach ($tabentree_saturday[$i][$j] as $key => $value) {
+                                                                                echo $tabentree_saturday[$i][$j][$key].'<br />';
+                                                                            }
+                                                                        }  
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    echo'</td>';
+                                                    echo'<td>';
+                                                        if (!empty($tabentree_sunday)) {
+                                                            if ($countname_user=1) {
+                                                                if ($countname_device=1) {
+                                                                    foreach ($tabentree_sunday[0][0] as $key => $value) {
+                                                                        echo $tabentree_sunday[0][0][$key].'<br />';
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    for($j=0;$j<$countname_device; $j++){
+                                                                        foreach ($tabentree_sunday[0][$j] as $key => $value) {
+                                                                            echo $tabentree_sunday[0][$j][$key].'<br />';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } 
+                                                            else {
+                                                                if ($countname_device=1) {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        foreach ($tabentree_sunday[$i][0] as $key => $value) {
+                                                                            echo $tabentree_sunday[$i][0][$key].'<br />';
+                                                                        } 
+                                                                    }
+                                                                } else {
+                                                                    for($i=0;$i<$countname_user;$i++){
+                                                                        for($j=0;$j<$countname_device; $j++){
+                                                                            foreach ($tabentree_sunday[$i][$j] as $key => $value) {
+                                                                                echo $tabentree_sunday[$i][$j][$key].'<br />';
+                                                                            }
+                                                                        }  
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    echo'</td>';
+                                                echo'</tr>';
+                                            }
+                                        @endphp
+                                    @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -407,10 +594,12 @@
     </a>
 
     <!-- Logout Modal-->
+    <script src="colorib/js/jquery.min.js"></script>
+    <script src="colorib/js/popper.js"></script>
+    <script src="colorib/js/bootstrap.min.js"></script>
+    <script src="colorib/js/bootstrap-multiselect.js"></script>
+    <script src="colorib/js/main.js"></script>
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 

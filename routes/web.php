@@ -22,8 +22,11 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('admin');
 });
-Route::get('/delete',[UserController::class, 'admin']);
+Route::get('/report',[UserController::class, 'admin']);
 Route::get('/add',[UserController::class, 'admin']);
 Route::get('/admin',[UserController::class, 'admin']);
+Route::get('/test',function () {
+    return view('test');
+});
 Route::get('/display',[UserController::class, 'display']);
-Route::post('/display/post',[UserController::class, 'display']);
+Route::post('/display-post',[UserController::class, 'display']);
